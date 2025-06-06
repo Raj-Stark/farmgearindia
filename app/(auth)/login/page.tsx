@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Image from "next/image";
 import { Lock } from "lucide-react";
@@ -10,8 +11,52 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import agri from "../../../public/agriculture-2.jpg";
+import { useGoogleLogin } from "@react-oauth/google";
+import { useRouter } from "next/navigation";
+import { useSetAtom } from "jotai/react";
+import { userAtom } from "@/app/atoms/userAtom";
 
 const LoginPage = () => {
+  const router = useRouter();
+  const setUser = useSetAtom(userAtom);
+  const responseGoogle = async (authResult) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_LOCAL_URL}auth/google-login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ code: authResult.code }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Google login failed");
+      }
+
+      const data = await response.json();
+
+      setUser({
+        isLoggedIn: true,
+        name: data.user.name,
+        userId: data.user.userId,
+      });
+
+      if (data) {
+        router.push("/");
+      }
+    } catch (error) {
+      throw new Error(`Google login failed ${error}`);
+    }
+  };
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: responseGoogle,
+    onError: responseGoogle,
+    flow: "auth-code",
+  });
+
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
       {/* Background Image */}
@@ -40,7 +85,10 @@ const LoginPage = () => {
           </CardHeader>
 
           <CardContent>
-            <button className="flex items-center justify-center gap-2 w-full py-2 border rounded-lg shadow-sm hover:bg-gray-100 transition text-sm font-medium bg-white">
+            <button
+              className="flex items-center justify-center gap-2 w-full py-2 border rounded-lg shadow-sm hover:bg-gray-100 transition text-sm font-medium bg-white"
+              onClick={() => googleLogin()}
+            >
               {/* ✅ Google SVG Full */}
               <svg
                 className="w-4 h-4"

@@ -1,8 +1,8 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Typography } from "../ui/typography";
 import { Input } from "../ui/input";
-import { Heart, LogIn, Menu, Search, ShoppingCart } from "lucide-react";
+import { Heart, LogIn, Menu, Search, ShoppingCart, User } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Sheet,
@@ -12,9 +12,20 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import { useRouter } from "next/navigation";
+import { useAtomValue } from "jotai/react";
+import { userAtom } from "@/app/atoms/userAtom";
 
 const Navbar = () => {
   const router = useRouter();
+  const user = useAtomValue(userAtom);
+
+  const [open, setOpen] = useState(false);
+
+  const handleRouteChange = (path: string) => {
+    router.push(path);
+    setOpen(false);
+  };
+
   return (
     <header className="bg-background border-b border-border shadow-sm">
       <nav className="flex items-center justify-between gap-2 px-3 py-2 xl:container xl:mx-auto xl:px-6 xl:py-4">
@@ -48,23 +59,39 @@ const Navbar = () => {
               Cart
             </Typography>
           </Button>
-          <Button
-            variant="default"
-            className="px-4 py-2"
-            onClick={() => router.push("/login")}
-          >
-            <Typography
-              variant="small"
-              className="text-background font-semibold"
+
+          {user.isLoggedIn ? (
+            <Button
+              variant="default"
+              className="px-4 py-2"
+              onClick={() => router.push("/profile")}
             >
-              Login/Register
-            </Typography>
-          </Button>
+              <Typography
+                variant="small"
+                className="text-background font-semibold"
+              >
+                {user.name}
+              </Typography>
+            </Button>
+          ) : (
+            <Button
+              variant="default"
+              className="px-4 py-2"
+              onClick={() => router.push("/login")}
+            >
+              <Typography
+                variant="small"
+                className="text-background font-semibold"
+              >
+                Login/Register
+              </Typography>
+            </Button>
+          )}
         </div>
 
         {/* Mobile Menu */}
         <div className="xl:hidden">
-          <Sheet>
+          <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
@@ -80,17 +107,37 @@ const Navbar = () => {
                 <SheetTitle className="text-lg">Menu</SheetTitle>
               </SheetHeader>
               <ul className="flex flex-col gap-4 p-4">
-                <li className="flex items-center gap-3 hover:text-primary">
+                <li
+                  className="flex items-center gap-3 hover:text-primary cursor-pointer"
+                  onClick={() => handleRouteChange("/wishlist")}
+                >
                   <Heart size={18} />
                   <Typography variant="small">Wishlist</Typography>
                 </li>
-                <li className="flex items-center gap-3 hover:text-primary">
+                <li
+                  className="flex items-center gap-3 hover:text-primary cursor-pointer"
+                  onClick={() => handleRouteChange("/cart")}
+                >
                   <ShoppingCart size={18} />
                   <Typography variant="small">Cart</Typography>
                 </li>
-                <li className="flex items-center gap-3 hover:text-primary">
-                  <LogIn size={18} />
-                  <Typography variant="small">Login/Register</Typography>
+                <li
+                  className="flex items-center gap-3 hover:text-primary cursor-pointer"
+                  onClick={() =>
+                    handleRouteChange(user.isLoggedIn ? "/profile" : "/login")
+                  }
+                >
+                  {user.isLoggedIn ? (
+                    <>
+                      <User size={18} />
+                      <Typography variant="small">{user.name}</Typography>
+                    </>
+                  ) : (
+                    <>
+                      <LogIn size={18} />
+                      <Typography variant="small">Login/Register</Typography>
+                    </>
+                  )}
                 </li>
               </ul>
             </SheetContent>

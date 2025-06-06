@@ -1,50 +1,41 @@
+import { Category } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import React from "react";
+import axios from "axios";
 
-const categories = [
-  {
-    title: "Tractors",
-    image: "/categories/tractors.jpg",
-  },
-  {
-    title: "Harvesters",
-    image: "/categories/harvesters.jpg",
-  },
-  {
-    title: "Planting & Seeding",
-    image: "/categories/planting.jpg",
-  },
-  {
-    title: "Irrigation Systems",
-    image: "/categories/irrigation.jpg",
-  },
-];
-
-const CategorySection = () => {
+async function getCategories(): Promise<Category[]> {
+  try {
+    const endpoint = `${process.env.NEXT_PUBLIC_LOCAL_URL}categories`;
+    const response = await axios.get<{ categories: Category[] }>(endpoint);
+    return response.data.categories;
+  } catch (error) {
+    console.error("Failed to fetch categories:", error);
+    return [];
+  }
+}
+const CategorySection = async () => {
+  const categories = await getCategories();
   return (
     <section>
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2  gap-2 md:gap-4">
         {categories.map((category) => (
           <Card
-            key={category.title}
+            key={category._id}
             className="relative p-0 overflow-hidden group min-h-[280px] justify-end"
           >
             <Image
-              src={category.image}
-              alt={category.title}
+              src={category.image ?? ""}
+              alt={category.name}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
-
-            {/* Overlay */}
             <div className="absolute inset-0 bg-black/50 z-10" />
 
-            {/* Content */}
             <CardContent className="absolute bottom-16 z-20 text-white">
               <CardTitle className="text-lg font-bold">
-                {category.title}
+                {category.name}
               </CardTitle>
             </CardContent>
 
