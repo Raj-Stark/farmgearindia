@@ -5,6 +5,7 @@ import { Star } from "lucide-react";
 import Image from "next/image";
 import axios from "axios";
 import ProductCardAction from "./components/product-card-action";
+import { ImageCarousel } from "@/components/custom/Image-carousel";
 
 interface SingleProductPageProps {
   params: {
@@ -23,6 +24,7 @@ async function getProductById(
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_LOCAL_URL}product/${singleProductSlug}`
     );
+
     return response.data.product;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 404) {
@@ -95,23 +97,17 @@ const ProductDetailsPage = async ({ params }: SingleProductPageProps) => {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 place-items-center">
         {/* Product Image */}
-        <Card className="overflow-hidden">
+        <div className="w-full lg:w-2xl">
           {product.images && product.images.length > 0 ? (
-            <Image
-              src={product.images[0]}
-              alt={product.name}
-              width={600}
-              height={400}
-              className="object-cover w-full h-auto"
-            />
+            <ImageCarousel image={product.images} />
           ) : (
             <div className="w-full h-64 flex items-center justify-center text-gray-500">
               No image available
             </div>
           )}
-        </Card>
+        </div>
 
         {/* Product Info */}
         <div>
@@ -120,14 +116,14 @@ const ProductDetailsPage = async ({ params }: SingleProductPageProps) => {
           <div className="flex items-center mt-2 space-x-4 text-sm text-gray-600">
             <div className="flex items-center space-x-1">
               <Star className="h-4 w-4 text-yellow-500" />
-              <span>{product.rating}</span>
-              <span>({product.reviewsCount} reviews)</span>
+              <span>{product.averageRating}</span>
+              <span>({product.numOfReviews} reviews)</span>
             </div>
             <Separator orientation="vertical" className="h-4" />
             <span
-              className={product.inStock ? "text-green-600" : "text-red-500"}
+              className={product.inventory ? "text-green-600" : "text-red-500"}
             >
-              {product.inStock ? "In Stock" : "Out of Stock"}
+              {product.inventory ? "In Stock" : "Out of Stock"}
             </span>
           </div>
 

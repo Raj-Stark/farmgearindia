@@ -28,7 +28,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const productImage = images?.[0] || fallbackImage;
 
   return (
-    <Card className="w-full p-0 shadow-md pb-2">
+    <Card className="w-full p-0 shadow-md pb-2 justify-between">
       {/* Image Section */}
       <div className="relative h-[200px] md:h-[240px] w-full rounded-t-xl overflow-hidden">
         <Image
@@ -47,11 +47,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
       {/* Product Info */}
       <CardContent className="space-y-1 px-1 md:px-3 md:space-y-2">
-        <CardTitle className="text-xs md:text-lg font-semibold leading-tight">
-          {name}
-        </CardTitle>
+        <CardTitle className="font-semibold leading-tight">{name}</CardTitle>
 
-        <div className="flex items-center gap-1 text-yellow-500 text-xs">
+        <div className="flex items-center gap-1 text-yellow-500 ">
           <StarRating ratingValue={String(averageRating) || ""} />
           <span className="text-muted-foreground text-[8px] md:text-xs ml-1">
             ({numOfReviews ?? 0} reviews)
