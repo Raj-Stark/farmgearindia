@@ -1,11 +1,14 @@
 import { ProductType, Review } from "@/app/types";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Star } from "lucide-react";
 import Image from "next/image";
 import axios from "axios";
 import ProductCardAction from "./components/product-card-action";
 import { ImageCarousel } from "@/components/custom/Image-carousel";
+import StarRating from "@/components/custom/star-rating";
+import ProductReviewForm from "./components/product-review-form";
+import ProductReviewList from "./components/product-review-list";
+import { Marked } from "marked";
 
 interface SingleProductPageProps {
   params: {
@@ -16,6 +19,11 @@ interface SingleProductPageProps {
 export interface SingleProductType extends ProductType {
   reviews: Review[];
 }
+
+const marked = new Marked({
+  gfm: true,
+  breaks: true,
+});
 
 async function getProductById(
   singleProductSlug: string
@@ -32,37 +40,6 @@ async function getProductById(
     }
     throw error;
   }
-}
-
-// Format plain text into simple HTML
-function convertPlainTextToHtml(description: string): string {
-  const lines = description.split(/\r?\n/);
-  let html = "";
-  let inList = false;
-
-  for (const line of lines) {
-    const trimmed = line.trim();
-
-    if (trimmed.startsWith("•")) {
-      if (!inList) {
-        html += "<ul>";
-        inList = true;
-      }
-      html += `<li>${trimmed.replace("•", "").trim()}</li>`;
-    } else {
-      if (inList) {
-        html += "</ul>";
-        inList = false;
-      }
-      if (trimmed) {
-        html += `<p>${trimmed}</p>`;
-      }
-    }
-  }
-
-  if (inList) html += "</ul>";
-
-  return html;
 }
 
 const ProductDetailsPage = async ({ params }: SingleProductPageProps) => {
@@ -93,7 +70,7 @@ const ProductDetailsPage = async ({ params }: SingleProductPageProps) => {
     );
   }
 
-  const htmlDescription = convertPlainTextToHtml(product.description);
+  const htmlDescription = await marked.parse(product.description);
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -115,15 +92,14 @@ const ProductDetailsPage = async ({ params }: SingleProductPageProps) => {
 
           <div className="flex items-center mt-2 space-x-4 text-sm text-gray-600">
             <div className="flex items-center space-x-1">
-              <Star className="h-4 w-4 text-yellow-500" />
-              <span>{product.averageRating}</span>
+              <StarRating ratingValue={String(product.averageRating) || ""} />
               <span>({product.numOfReviews} reviews)</span>
             </div>
             <Separator orientation="vertical" className="h-4" />
             <span
               className={product.inventory ? "text-green-600" : "text-red-500"}
             >
-              {product.inventory ? "In Stock" : "Out of Stock"}
+              {product.inventory === 0 ? "Out Of Stock" : "In Stock"}
             </span>
           </div>
 
@@ -137,9 +113,11 @@ const ProductDetailsPage = async ({ params }: SingleProductPageProps) => {
           />
 
           <Separator className="my-4" />
-          <ProductCardAction />
+          <ProductCardAction product={product} />
         </div>
       </div>
+      <ProductReviewForm productId={product._id} />
+      <ProductReviewList reviews={product.reviews} />
     </div>
   );
 };
