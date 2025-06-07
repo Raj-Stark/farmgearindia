@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import { Heart } from "lucide-react";
 import {
@@ -13,13 +14,16 @@ import fallbackImage from "../../public/farm-machine.jpg";
 import StarRating from "./star-rating";
 import { ProductType } from "@/app/types";
 import { formatCurrency } from "@/utils/format-currency";
+import { useRouter } from "next/navigation";
 
 interface ProductCardProps {
   product: ProductType;
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
-  const { name, price, images, numOfReviews, averageRating } = product;
+  const { name, price, images, numOfReviews, averageRating, slug } = product;
+
+  const router = useRouter();
 
   const productImage = images?.[0] || fallbackImage;
 
@@ -27,7 +31,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
     <Card className="w-full p-0 shadow-md pb-2">
       {/* Image Section */}
       <div className="relative h-[200px] md:h-[240px] w-full rounded-t-xl overflow-hidden">
-        <Image src={productImage} alt={name} fill className="object-cover" />
+        <Image
+          src={productImage}
+          alt={name}
+          fill
+          className="object-cover cursor-pointer"
+          onClick={() => router.push(`/${slug}`)}
+        />
         <CardAction className="absolute top-2 right-2 z-10">
           <button className="rounded-full bg-white p-1 shadow hover:bg-muted transition">
             <Heart className="w-4 h-4 text-red-500 fill-red-500" />

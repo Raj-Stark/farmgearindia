@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Typography } from "../ui/typography";
 import { Input } from "../ui/input";
 import { Heart, LogIn, Menu, Search, ShoppingCart, User } from "lucide-react";
+
 import { Button } from "../ui/button";
 import {
   Sheet,
@@ -61,11 +62,8 @@ const Navbar = () => {
           </Button>
 
           {user.isLoggedIn ? (
-            <Button
-              variant="default"
-              className="px-4 py-2"
-              onClick={() => router.push("/profile")}
-            >
+            <Button variant="default" onClick={() => router.push("/profile")}>
+              <User size={18} />
               <Typography
                 variant="small"
                 className="text-background font-semibold"
@@ -74,11 +72,7 @@ const Navbar = () => {
               </Typography>
             </Button>
           ) : (
-            <Button
-              variant="default"
-              className="px-4 py-2"
-              onClick={() => router.push("/login")}
-            >
+            <Button variant="default" onClick={() => router.push("/login")}>
               <Typography
                 variant="small"
                 className="text-background font-semibold"

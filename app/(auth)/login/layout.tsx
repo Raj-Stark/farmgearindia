@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import React, { ReactNode } from "react";
 import "../../globals.css";
 import Provider from "@/app/provider";
-import ProtectedRoute from "@/app/protectedRoute";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -24,9 +23,7 @@ const LoginLayout = ({ children }: LoginLayoutProps) => {
   return (
     <html lang="en" className={manrope.variable}>
       <body className="antialiased font-sans">
-        <Provider>
-          <ProtectedRoute>{children}</ProtectedRoute>
-        </Provider>
+        <Provider>{children}</Provider>
       </body>
     </html>
   );

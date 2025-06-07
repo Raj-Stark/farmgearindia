@@ -24,3 +24,19 @@ export interface ProductType {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface Review {
+  _id: string;
+  rating: number;
+  comment: string;
+  userId: UserId;
+  productId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UserId {
+  _id: string;
+  name: string;
+  email: string;
+}
