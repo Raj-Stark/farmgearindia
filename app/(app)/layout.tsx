@@ -26,7 +26,7 @@ export default function RootLayout({
       <body className="antialiased font-sans">
         <Navbar />
         <Provider>{children}</Provider>
-        <Toaster />
+        <Toaster richColors position="top-left" expand={true} />
       </body>
     </html>
   );

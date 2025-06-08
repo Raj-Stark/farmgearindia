@@ -15,10 +15,14 @@ import {
 import { useRouter } from "next/navigation";
 import { useAtomValue } from "jotai/react";
 import { userAtom } from "@/app/atoms/userAtom";
+import { wishListAtom } from "@/app/atoms/wishListAtom";
+import { Badge } from "@/components/ui/badge";
 
 const Navbar = () => {
   const router = useRouter();
   const user = useAtomValue(userAtom);
+
+  const wishList = useAtomValue(wishListAtom);
 
   const [open, setOpen] = useState(false);
 
@@ -48,8 +52,20 @@ const Navbar = () => {
 
         {/* Desktop actions */}
         <div className="hidden xl:flex items-center gap-4">
-          <Button variant="ghost" className="gap-1 hover:text-primary">
+          <Button
+            variant="ghost"
+            className="relative gap-1 hover:text-primary"
+            onClick={() => router.push("/wishlist")}
+          >
             <Heart size={20} />
+            {wishList.length > 0 && (
+              <Badge
+                variant="secondary"
+                className="absolute -top-1 -right-2 rounded-full px-1 text-[10px] h-4 min-w-[16px] justify-center items-center  bg-primary text-white"
+              >
+                {wishList.length}
+              </Badge>
+            )}
             <Typography variant="small" className="font-semibold">
               Wishlist
             </Typography>

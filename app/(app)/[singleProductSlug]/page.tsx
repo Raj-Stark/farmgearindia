@@ -1,7 +1,5 @@
 import { ProductType, Review } from "@/app/types";
-import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import Image from "next/image";
 import axios from "axios";
 import ProductCardAction from "./components/product-card-action";
 import { ImageCarousel } from "@/components/custom/Image-carousel";
@@ -10,20 +8,11 @@ import ProductReviewForm from "./components/product-review-form";
 import ProductReviewList from "./components/product-review-list";
 import { Marked } from "marked";
 
-interface SingleProductPageProps {
-  params: {
-    singleProductSlug: string;
-  };
-}
-
 export interface SingleProductType extends ProductType {
   reviews: Review[];
 }
 
-const marked = new Marked({
-  gfm: true,
-  breaks: true,
-});
+const marked = new Marked({ gfm: true, breaks: true });
 
 async function getProductById(
   singleProductSlug: string
@@ -32,7 +21,6 @@ async function getProductById(
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_LOCAL_URL}product/${singleProductSlug}`
     );
-
     return response.data.product;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 404) {
@@ -41,9 +29,12 @@ async function getProductById(
     throw error;
   }
 }
-
-const ProductDetailsPage = async ({ params }: SingleProductPageProps) => {
-  const { singleProductSlug } = params;
+export default async function ProductDetailsPage({
+  params,
+}: {
+  params: { singleProductSlug: string };
+}) {
+  const { singleProductSlug } = await params;
 
   let product: SingleProductType | null = null;
   let error: string | null = null;
@@ -75,9 +66,8 @@ const ProductDetailsPage = async ({ params }: SingleProductPageProps) => {
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 place-items-center">
-        {/* Product Image */}
         <div className="w-full lg:w-2xl">
-          {product.images && product.images.length > 0 ? (
+          {product.images?.length > 0 ? (
             <ImageCarousel image={product.images} />
           ) : (
             <div className="w-full h-64 flex items-center justify-center text-gray-500">
@@ -86,7 +76,6 @@ const ProductDetailsPage = async ({ params }: SingleProductPageProps) => {
           )}
         </div>
 
-        {/* Product Info */}
         <div>
           <h1 className="text-2xl font-semibold">{product.name}</h1>
 
@@ -104,14 +93,11 @@ const ProductDetailsPage = async ({ params }: SingleProductPageProps) => {
           </div>
 
           <p className="text-2xl font-bold mt-4">₹ {product.price}</p>
-
           <Separator className="my-4" />
-
           <div
             className="prose max-w-none"
             dangerouslySetInnerHTML={{ __html: htmlDescription }}
           />
-
           <Separator className="my-4" />
           <ProductCardAction product={product} />
         </div>
@@ -120,6 +106,4 @@ const ProductDetailsPage = async ({ params }: SingleProductPageProps) => {
       <ProductReviewList reviews={product.reviews} />
     </div>
   );
-};
-
-export default ProductDetailsPage;
+}
