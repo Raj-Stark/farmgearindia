@@ -15,6 +15,10 @@ import StarRating from "./star-rating";
 import { ProductType } from "@/app/types";
 import { formatCurrency } from "@/utils/format-currency";
 import { useRouter } from "next/navigation";
+import { cartAtom } from "@/app/atoms/cartAtom";
+import { wishListAtom } from "@/app/atoms/wishListAtom";
+import { useAtom, useAtomValue } from "jotai";
+import { toast } from "sonner";
 
 interface ProductCardProps {
   product: ProductType;
@@ -22,6 +26,28 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const { name, price, images, numOfReviews, averageRating, slug } = product;
+
+  const cartData = useAtomValue(cartAtom);
+  const [wishlist, setWishList] = useAtom(wishListAtom);
+
+  const isInCart = cartData.some((item) => item.id === product._id);
+
+  const isInWishlist = wishlist.some((item) => item._id === product._id);
+
+  const handleWishlistToggle = () => {
+    if (isInCart) {
+      toast.error("Item already present inside Wishlist");
+      return;
+    }
+
+    if (isInWishlist) {
+      setWishList((prev) => prev.filter((item) => item._id !== product._id));
+      toast.success("Item removed from Wishlist");
+    } else {
+      setWishList((prev) => [...prev, product]);
+      toast.success("Item added to Wishlist");
+    }
+  };
 
   const router = useRouter();
 
@@ -39,8 +65,15 @@ const ProductCard = ({ product }: ProductCardProps) => {
           onClick={() => router.push(`/${slug}`)}
         />
         <CardAction className="absolute top-2 right-2 z-10">
-          <button className="rounded-full bg-white p-1 shadow hover:bg-muted transition">
-            <Heart className="w-4 h-4 text-red-500 fill-red-500" />
+          <button
+            className="rounded-full bg-white p-1 shadow hover:bg-muted transition"
+            onClick={handleWishlistToggle}
+          >
+            <Heart
+              className="w-4 h-4"
+              fill={isInWishlist ? "red" : "none"}
+              color={isInWishlist ? "red" : "black"}
+            />
           </button>
         </CardAction>
       </div>
