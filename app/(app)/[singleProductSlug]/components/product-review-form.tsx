@@ -145,7 +145,7 @@ const ProductReviewForm = ({ productId }: Props) => {
                 id="comment"
                 {...field}
                 placeholder="What did you like or dislike? Would you recommend it?"
-                className="min-h-[90px] text-base"
+                className="min-h-[90px] text-base resize-none"
               />
             )}
           />

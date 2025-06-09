@@ -70,7 +70,11 @@ const Navbar = () => {
               Wishlist
             </Typography>
           </Button>
-          <Button variant="ghost" className="gap-1 hover:text-primary">
+          <Button
+            variant="ghost"
+            className="gap-1 hover:text-primary"
+            onClick={() => router.push("/placeOrder")}
+          >
             <ShoppingCart size={20} />
             <Typography variant="small" className="font-semibold">
               Cart

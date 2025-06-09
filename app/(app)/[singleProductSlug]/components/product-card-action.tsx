@@ -78,7 +78,7 @@ const ProductCardAction = ({ product }: Props) => {
 
     setCartData((prev) => [...prev, newCartItem]);
     setWishList((prev) => prev.filter((item) => item._id !== _id));
-    router.push("/cart");
+    router.push("/placeOrder");
     toast.success("Item added to cart successfully");
   };
 

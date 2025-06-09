@@ -3,7 +3,7 @@ import HeroSection from "./components/hero-section";
 import CategorySection from "./components/category-section";
 import ProductsSection from "./components/products-section";
 
-export default function Home() {
+export default function page() {
   return (
     <main>
       <HeroSection />
