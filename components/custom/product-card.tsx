@@ -19,12 +19,14 @@ import { cartAtom } from "@/app/atoms/cartAtom";
 import { wishListAtom } from "@/app/atoms/wishListAtom";
 import { useAtom, useAtomValue } from "jotai";
 import { toast } from "sonner";
+import { truncateText } from "@/utils/truncate-text";
 
 interface ProductCardProps {
   product: ProductType;
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
+  const router = useRouter();
   const { name, price, images, numOfReviews, averageRating, slug } = product;
 
   const cartData = useAtomValue(cartAtom);
@@ -48,8 +50,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
       toast.success("Item added to Wishlist");
     }
   };
-
-  const router = useRouter();
 
   const productImage = images?.[0] || fallbackImage;
 
@@ -80,7 +80,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
       {/* Product Info */}
       <CardContent className="space-y-1 px-1 md:px-3 md:space-y-2">
-        <CardTitle className="font-semibold leading-tight">{name}</CardTitle>
+        <CardTitle className="font-semibold leading-tight">
+          {truncateText(name, 30)}
+        </CardTitle>
 
         <div className="flex items-center gap-1 text-yellow-500 ">
           <StarRating ratingValue={String(averageRating) || ""} />
@@ -96,7 +98,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
       {/* CTA */}
       <CardFooter className="px-1 py-0 md:px-3">
-        <Button variant={"default"} className="w-full">
+        <Button
+          variant={"default"}
+          className="w-full cursor-pointer"
+          onClick={() => router.push(`/${slug}`)}
+        >
           Add to Cart
         </Button>
       </CardFooter>

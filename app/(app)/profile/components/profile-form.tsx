@@ -11,6 +11,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 
 import { toast } from "sonner";
+import Spinner from "@/components/custom/Spinner";
 
 interface FormData {
   name: string;
@@ -105,7 +106,7 @@ const ProfileForm = () => {
     mutation.mutate(data);
   };
 
-  if (isLoading) return <Typography>Loading...</Typography>;
+  if (isLoading) return <Spinner width={30} height={30} />;
   if (isError) return <Typography>Error loading user data</Typography>;
 
   return (
@@ -170,7 +171,7 @@ const ProfileForm = () => {
                 {...field}
                 id="street"
                 placeholder="123 Farm Lane"
-                className="w-full h-20 mt-2"
+                className="w-full h-20 mt-2 resize-none"
               />
             )}
           />
