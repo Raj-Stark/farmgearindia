@@ -25,8 +25,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={manrope.variable}>
       <body className="antialiased font-sans">
-        <Navbar />
-        <Provider>{children}</Provider>
+        <Provider>
+          <Navbar />
+          {children}
+        </Provider>
         <Footer />
         <Toaster richColors position="top-left" expand={true} />
       </body>

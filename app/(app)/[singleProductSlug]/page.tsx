@@ -76,7 +76,7 @@ export default async function ProductDetailsPage({
           )}
         </div>
 
-        <div>
+        <div className="w-full">
           <h1 className="text-2xl font-semibold">{product.name}</h1>
 
           <div className="flex items-center mt-2 space-x-4 text-sm text-gray-600">
