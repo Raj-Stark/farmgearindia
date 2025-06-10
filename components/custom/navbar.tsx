@@ -2,15 +2,7 @@
 import React, { useState } from "react";
 import { Typography } from "../ui/typography";
 import { Input } from "../ui/input";
-import {
-  Heart,
-  LogIn,
-  Menu,
-  Search,
-  ShoppingCart,
-  User,
-  X,
-} from "lucide-react";
+import { Heart, LogIn, Menu, Search, ShoppingCart, User } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Sheet,

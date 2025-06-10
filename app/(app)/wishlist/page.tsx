@@ -2,7 +2,6 @@
 import { wishListAtom } from "@/app/atoms/wishListAtom";
 import ProductCard from "@/components/custom/product-card";
 import SectionSeparator from "@/components/custom/section-seprator";
-import { Typography } from "@/components/ui/typography";
 import { useAtomValue } from "jotai";
 import React from "react";
 

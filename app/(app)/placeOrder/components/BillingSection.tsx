@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 
 export default function BillingSection() {
   const getCurrentUserEndpoint = `${process.env.NEXT_PUBLIC_LOCAL_URL}user/getCurrentUser`;
-  const updateUserEndpoint = `${process.env.NEXT_PUBLIC_LOCAL_URL}user/updateUser`;
 
   const router = useRouter();
 
@@ -43,6 +42,11 @@ export default function BillingSection() {
             {userData?.email}, {userData?.phone}
           </div>
         </div>
+      )}
+      {isError && (
+        <Typography variant="small" className="text-red-400">
+          Something gone wrong. Try again later.
+        </Typography>
       )}
 
       <div

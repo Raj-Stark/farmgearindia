@@ -2,7 +2,6 @@
 
 import {
   FacebookIcon,
-  GithubIcon,
   InstagramIcon,
   SendIcon,
   ShieldCheckIcon,

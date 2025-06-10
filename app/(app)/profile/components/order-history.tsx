@@ -34,7 +34,7 @@ const OrderHistory = () => {
       <Typography variant="h4">Your Orders</Typography>
 
       {orders.length === 0 ? (
-        <Typography>You haven't placed any orders yet.</Typography>
+        <Typography>You haven&apos;t placed any orders yet.</Typography>
       ) : (
         <div className="space-y-4">
           {orders.map((order) => (

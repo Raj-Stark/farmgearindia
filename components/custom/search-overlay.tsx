@@ -10,6 +10,8 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Spinner from "./Spinner";
+import { ProductType } from "@/app/types";
+import Image from "next/image";
 
 const SearchOverlay = ({ onClose }: { onClose: () => void }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,6 +27,7 @@ const SearchOverlay = ({ onClose }: { onClose: () => void }) => {
         const response = await axios.get(endpoint);
         return response.data;
       } catch (err) {
+        console.error(err);
         return { products: [] };
       }
     },
@@ -72,7 +75,7 @@ const SearchOverlay = ({ onClose }: { onClose: () => void }) => {
 
         <div className="mt-4 space-y-4">
           {data?.products?.length > 0
-            ? data.products.map((product: any) => (
+            ? data.products.map((product: ProductType) => (
                 <div
                   key={product._id}
                   className="flex items-center gap-4 cursor-pointer hover:bg-gray-100 p-2 rounded"
@@ -81,7 +84,7 @@ const SearchOverlay = ({ onClose }: { onClose: () => void }) => {
                     onClose();
                   }}
                 >
-                  <img
+                  <Image
                     src={product.images[0]}
                     alt={product.name}
                     className="w-12 h-12 object-cover rounded"

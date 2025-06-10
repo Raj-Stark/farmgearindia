@@ -8,6 +8,7 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface ImageCarouselProps {
   image: string[];
@@ -47,7 +48,7 @@ export function ImageCarousel({ image }: ImageCarouselProps) {
             <CarouselItem key={index}>
               <div className="p-1">
                 <div className="aspect-square w-full overflow-hidden rounded-xl bg-gray-100 flex items-center justify-center">
-                  <img
+                  <Image
                     src={imgUrl}
                     alt={`Image ${index + 1}`}
                     className="max-h-full max-w-full object-contain"
