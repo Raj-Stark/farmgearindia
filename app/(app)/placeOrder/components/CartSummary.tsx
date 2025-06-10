@@ -54,9 +54,9 @@ export default function CartSummary() {
           <p className="font-semibold">No products found. Add some</p>
         )}
         {cartItems.map((item) => (
-          <div className="relative  md:pt-4" key={item.id}>
+          <div className="relative p-1 sm:pt-4" key={item.id}>
             <div
-              className="flex items-start gap-4 border-b pb-4 md:mt-1 "
+              className="flex items-start gap-4 border-b pb-4 mt-0 sm:mt-1 "
               key={item.id}
             >
               <Image
