@@ -29,12 +29,14 @@ async function getProductById(
     throw error;
   }
 }
-export default async function ProductDetailsPage({
-  params,
-}: {
-  params: { singleProductSlug: string };
-}) {
-  const { singleProductSlug } = await params;
+
+type PageProps = {
+  params: {
+    singleProductSlug: string;
+  };
+};
+export default async function ProductDetailsPage({ params }: PageProps) {
+  const { singleProductSlug } = params;
 
   let product: SingleProductType | null = null;
   let error: string | null = null;

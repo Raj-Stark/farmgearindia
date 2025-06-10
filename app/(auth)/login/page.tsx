@@ -19,7 +19,8 @@ import { userAtom } from "@/app/atoms/userAtom";
 const LoginPage = () => {
   const router = useRouter();
   const setUser = useSetAtom(userAtom);
-  const responseGoogle = async (authResult) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const responseGoogle = async (authResult: any) => {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_LOCAL_URL}auth/google-login`,
