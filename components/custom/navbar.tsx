@@ -18,6 +18,7 @@ import { wishListAtom } from "@/app/atoms/wishListAtom";
 import { cartAtom } from "@/app/atoms/cartAtom";
 import { Badge } from "@/components/ui/badge";
 import SearchOverlay from "./search-overlay";
+import { toast } from "sonner";
 
 const Navbar = () => {
   const router = useRouter();
@@ -29,6 +30,12 @@ const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
 
   const handleRouteChange = (path: string) => {
+    const protectedPaths = ["/wishlist", "/placeOrder"];
+    if (protectedPaths.includes(path) && !user.isLoggedIn) {
+      toast.error("Make sure to Login first !!!");
+      return;
+    }
+
     router.push(path);
     setOpen(false);
   };
@@ -75,7 +82,7 @@ const Navbar = () => {
               <Button
                 variant="ghost"
                 className="relative gap-1 hover:text-primary"
-                onClick={() => router.push("/wishlist")}
+                onClick={() => handleRouteChange("/wishlist")}
               >
                 <Heart size={20} />
                 {wishList.length > 0 && (
@@ -91,7 +98,7 @@ const Navbar = () => {
               <Button
                 variant="ghost"
                 className="relative gap-1 hover:text-primary"
-                onClick={() => router.push("/placeOrder")}
+                onClick={() => handleRouteChange("/placeOrder")}
               >
                 <ShoppingCart size={20} />
                 {cartList.length > 0 && (

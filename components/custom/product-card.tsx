@@ -20,6 +20,8 @@ import { wishListAtom } from "@/app/atoms/wishListAtom";
 import { useAtom, useAtomValue } from "jotai";
 import { toast } from "sonner";
 import { truncateText } from "@/utils/truncate-text";
+import { userAtom } from "@/app/atoms/userAtom";
+import { checkLogin } from "@/utils/check-login";
 
 interface ProductCardProps {
   product: ProductType;
@@ -34,9 +36,14 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   const isInCart = cartData.some((item) => item.id === product._id);
 
+  const user = useAtomValue(userAtom);
+
   const isInWishlist = wishlist.some((item) => item._id === product._id);
 
   const handleWishlistToggle = () => {
+    if (!user.isLoggedIn) {
+      return toast.error("Make sure to Login first !!!");
+    }
     if (isInCart) {
       toast.error("Item already present inside Wishlist");
       return;

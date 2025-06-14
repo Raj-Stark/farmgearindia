@@ -51,6 +51,8 @@ export function ImageCarousel({ image }: ImageCarouselProps) {
                   <Image
                     src={imgUrl}
                     alt={`Image ${index + 1}`}
+                    width={800}
+                    height={800}
                     className="max-h-full max-w-full object-contain"
                   />
                 </div>

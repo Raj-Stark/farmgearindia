@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Heart, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { cartAtom } from "@/app/atoms/cartAtom";
 import { wishListAtom } from "@/app/atoms/wishListAtom";
 import { ProductType } from "@/app/types";
@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import WhatsappBtn from "../../../../public/chat-on-whatsapp.png";
 import { BUSINESS_WHATSAPP_NUMBER, DOMAIN_NAME } from "@/constant";
 import { getWhatsappLink } from "@/utils/get-whatsapp-link";
+import { userAtom } from "@/app/atoms/userAtom";
 
 interface Props {
   product: ProductType;
@@ -21,6 +22,7 @@ interface Props {
 const ProductCardAction = ({ product }: Props) => {
   const router = useRouter();
   const { _id, name, price, images, inventory } = product;
+  const user = useAtomValue(userAtom);
 
   const [quantity, setQuantity] = useState(1);
   const [cartData, setCartData] = useAtom(cartAtom);
@@ -46,6 +48,10 @@ const ProductCardAction = ({ product }: Props) => {
   };
 
   const handleWishlistToggle = () => {
+    if (!user.isLoggedIn) {
+      return toast.error("Make sure to Login first !!!");
+    }
+
     if (isInCart) {
       toast.error("Item already present inside Wishlist");
       return;
@@ -61,6 +67,9 @@ const ProductCardAction = ({ product }: Props) => {
   };
 
   const handleCartUpdate = () => {
+    if (!user.isLoggedIn) {
+      return toast.error("Make sure to Login first !!!");
+    }
     if (isInCart) {
       toast.error("Item already present in the cart");
       return;

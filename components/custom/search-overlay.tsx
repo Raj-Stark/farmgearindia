@@ -87,6 +87,8 @@ const SearchOverlay = ({ onClose }: { onClose: () => void }) => {
                   <Image
                     src={product.images[0]}
                     alt={product.name}
+                    width={200}
+                    height={200}
                     className="w-12 h-12 object-cover rounded"
                   />
                   <Typography variant="small" className="font-medium">

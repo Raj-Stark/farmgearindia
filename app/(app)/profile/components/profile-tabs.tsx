@@ -10,11 +10,17 @@ import { userAtom } from "@/app/atoms/userAtom";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import Spinner from "@/components/custom/Spinner";
+import { wishListAtom } from "@/app/atoms/wishListAtom";
+import { cartAtom } from "@/app/atoms/cartAtom";
 
 const ProfileTabs = () => {
   const router = useRouter();
 
   const setUser = useSetAtom(userAtom);
+
+  const setWishList = useSetAtom(wishListAtom);
+
+  const setCart = useSetAtom(cartAtom);
 
   const { mutate: logout } = useMutation({
     mutationFn: async () => {
@@ -39,6 +45,9 @@ const ProfileTabs = () => {
         name: "",
         userId: "",
       });
+
+      setWishList([]);
+      setCart([]);
 
       router.push("/");
     },
