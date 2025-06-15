@@ -51,12 +51,12 @@ export default function OrderSummary() {
     },
     onSuccess: (data) => {
       console.log(data);
-      if (paymentMethod === "online" && data.paymentUrl) {
-        window.location.href = data.paymentUrl;
-      } else {
-        toast.success("Order placed successfully!");
-        router.push("/thank-you");
-      }
+      // if (paymentMethod === "online" && data.paymentUrl) {
+      //   window.location.href = data.paymentUrl;
+      // } else {
+      //   toast.success("Order placed successfully!");
+      //   router.push("/thank-you");
+      // }
     },
     onError: (error: any) => {
       toast.error(error?.response?.data?.msg || "Something went wrong");
