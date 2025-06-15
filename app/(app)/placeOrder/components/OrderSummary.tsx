@@ -18,7 +18,7 @@ export default function OrderSummary() {
   const isBillingValid = useAtomValue(isBillingInfoValidAtom);
   const router = useRouter();
 
-  const shippingFeePerItem = 150;
+  const shippingFeePerItem = 1;
   const shippingFee = cartItems.reduce(
     (sum, item) => sum + shippingFeePerItem * item.quantity,
     0
