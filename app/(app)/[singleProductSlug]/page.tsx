@@ -1,3 +1,5 @@
+"use client";
+
 import { ProductType, Review } from "@/app/types";
 import { Separator } from "@/components/ui/separator";
 import axios from "axios";
@@ -6,13 +8,11 @@ import { ImageCarousel } from "@/components/custom/Image-carousel";
 import StarRating from "@/components/custom/star-rating";
 import ProductReviewForm from "./components/product-review-form";
 import ProductReviewList from "./components/product-review-list";
-import { Marked } from "marked";
+import ReactMarkdown from "react-markdown";
 
 export interface SingleProductType extends ProductType {
   reviews: Review[];
 }
-
-const marked = new Marked({ gfm: true, breaks: true });
 
 async function getProductById(
   singleProductSlug: string
@@ -35,6 +35,7 @@ type PageProps = {
     singleProductSlug: string;
   };
 };
+
 export default async function ProductDetailsPage({ params }: PageProps) {
   const { singleProductSlug } = params;
 
@@ -43,6 +44,7 @@ export default async function ProductDetailsPage({ params }: PageProps) {
 
   try {
     product = await getProductById(singleProductSlug);
+    console.log(product);
   } catch (err) {
     error = err instanceof Error ? err.message : "An unexpected error occurred";
   }
@@ -63,7 +65,11 @@ export default async function ProductDetailsPage({ params }: PageProps) {
     );
   }
 
-  const htmlDescription = await marked.parse(product.description);
+  // Pre-process description to ensure proper markdown formatting
+  const processDescription = (text: string) => {
+    // Ensure two newlines for paragraphs
+    return text.replace(/\n\n/g, "\n").replace(/\n/g, "\n\n");
+  };
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -96,10 +102,21 @@ export default async function ProductDetailsPage({ params }: PageProps) {
 
           <p className="text-2xl font-bold mt-4">₹ {product.price}</p>
           <Separator className="my-4" />
-          <div
-            className="prose max-w-none"
-            dangerouslySetInnerHTML={{ __html: htmlDescription }}
-          />
+          <div className="prose max-w-none">
+            <ReactMarkdown
+              components={{
+                // Customize rendering if needed
+                p: ({ node, ...props }) => <p className="mb-4" {...props} />,
+                li: ({ node, ...props }) => (
+                  <li className="ml-4 list-disc" {...props} />
+                ),
+              }}
+            >
+              {processDescription(
+                product.description || "No description available"
+              )}
+            </ReactMarkdown>
+          </div>
           <Separator className="my-4" />
           <ProductCardAction product={product} />
         </div>
