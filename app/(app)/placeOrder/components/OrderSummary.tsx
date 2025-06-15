@@ -1,13 +1,67 @@
 "use client";
 
 import { cartAtom } from "@/app/atoms/cartAtom";
+import { paymentMethodAtom } from "@/app/atoms/paymentMethodAtom";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/utils/format-currency";
 import { useAtomValue } from "jotai";
+import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner"; // optional toast for feedback
+import { isBillingInfoValidAtom } from "@/app/atoms/billingatom";
+import axios from "axios";
 
 export default function OrderSummary() {
   const cartItems = useAtomValue(cartAtom);
+  const paymentMethod = useAtomValue(paymentMethodAtom);
+  const isBillingValid = useAtomValue(isBillingInfoValidAtom);
+  const router = useRouter();
 
+  const shippingFeePerItem = 150;
+  const shippingFee = cartItems.reduce(
+    (sum, item) => sum + shippingFeePerItem * item.quantity,
+    0
+  );
+  const subtotal = cartItems.reduce((sum, item) => sum + item.cartTotal, 0);
+  const total = subtotal + shippingFee;
+
+  // 🔁 Mutation to create the order
+  const { mutate, isPending } = useMutation({
+    mutationFn: async () => {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_LOCAL_URL}order`,
+        {
+          items: cartItems.map((item) => ({
+            product: item.id,
+            amount: item.quantity,
+          })),
+          tax: 0,
+          shippingFee,
+          paymentMode: paymentMethod,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      return response.data;
+    },
+    onSuccess: (data) => {
+      console.log(data);
+      if (paymentMethod === "online" && data.paymentUrl) {
+        window.location.href = data.paymentUrl;
+      } else {
+        toast.success("Order placed successfully!");
+        router.push("/thank-you");
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.msg || "Something went wrong");
+    },
+  });
   return (
     <section className="border p-4 rounded-xl">
       <h2 className="text-lg font-bold mb-2">Order Summary</h2>
@@ -21,16 +75,25 @@ export default function OrderSummary() {
         ))}
 
         <hr />
+        <div className="flex justify-between">
+          <span>Shipping Fee</span>
+          <span>{formatCurrency(shippingFee)}</span>
+        </div>
+
+        <hr />
         <div className="flex justify-between font-semibold">
           <span>Total</span>
-          <span>
-            {formatCurrency(
-              cartItems.reduce((sum, item) => sum + item.cartTotal, 0)
-            )}
-          </span>
+          <span>{formatCurrency(total)}</span>
         </div>
       </div>
-      <Button className="mt-4 w-full">Place Order</Button>
+
+      <Button
+        className="mt-4 w-full"
+        onClick={() => mutate()}
+        disabled={isPending || !isBillingValid}
+      >
+        {isPending ? "Placing Order..." : "Place Order"}
+      </Button>
     </section>
   );
 }

@@ -5,11 +5,13 @@ import { Typography } from "@/components/ui/typography";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useSetAtom } from "jotai";
+import { isBillingInfoValidAtom } from "@/app/atoms/billingatom";
 
 export default function BillingSection() {
   const getCurrentUserEndpoint = `${process.env.NEXT_PUBLIC_LOCAL_URL}user/getCurrentUser`;
-
   const router = useRouter();
+  const setIsBillingValid = useSetAtom(isBillingInfoValidAtom);
 
   const {
     data: userData,
@@ -24,6 +26,21 @@ export default function BillingSection() {
       return response.data.user;
     },
   });
+
+  // 🔁 Validate billing info on load
+  if (userData) {
+    const valid =
+      !!userData.name &&
+      !!userData.email &&
+      !!userData.phone &&
+      !!userData.address?.street &&
+      !!userData.address?.city &&
+      !!userData.address?.state &&
+      !!userData.address?.zip &&
+      !!userData.address?.country;
+
+    setIsBillingValid(valid);
+  }
 
   return (
     <section className="border p-4 rounded-xl">
@@ -43,6 +60,7 @@ export default function BillingSection() {
           </div>
         </div>
       )}
+
       {isError && (
         <Typography variant="small" className="text-red-400">
           Something gone wrong. Try again later.
