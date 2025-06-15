@@ -56,7 +56,7 @@ export default function OrderSummary() {
           });
 
           await cashfree.checkout({
-            paymentSessionId: data.payment_session_id,
+            paymentSessionId: data.sessionId,
             redirectTarget: "_modal",
           });
         } catch (e) {
