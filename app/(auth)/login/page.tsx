@@ -81,7 +81,7 @@ const LoginPage = () => {
               Welcome Back!
             </CardTitle>
             <CardDescription>
-              Sign in to access your FarmGearIndia account.
+              Sign in to access your SparePartsBharat account.
             </CardDescription>
           </CardHeader>
 

@@ -1,4 +1,7 @@
-import React from "react";
+"use client";
+
+import React, { Suspense } from "react";
+
 import SectionSeparator from "@/components/custom/section-seprator";
 import ProfileTabs from "./components/profile-tabs";
 
@@ -10,7 +13,9 @@ const ProfilePage = () => {
       </div>
 
       <section className="mt-6">
-        <ProfileTabs />
+        <Suspense fallback={<div>Loading...</div>}>
+          <ProfileTabs />
+        </Suspense>
       </section>
     </article>
   );

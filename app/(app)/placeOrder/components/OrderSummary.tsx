@@ -1,5 +1,6 @@
 "use client";
 
+import { load } from "@cashfreepayments/cashfree-js";
 import { cartAtom } from "@/app/atoms/cartAtom";
 import { paymentMethodAtom } from "@/app/atoms/paymentMethodAtom";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,7 @@ import { formatCurrency } from "@/utils/format-currency";
 import { useAtomValue } from "jotai";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner"; // optional toast for feedback
+import { toast } from "sonner";
 import { isBillingInfoValidAtom } from "@/app/atoms/billingatom";
 import axios from "axios";
 
@@ -17,15 +18,17 @@ export default function OrderSummary() {
   const isBillingValid = useAtomValue(isBillingInfoValidAtom);
   const router = useRouter();
 
-  const shippingFeePerItem = 150;
-  const shippingFee = cartItems.reduce(
-    (sum, item) => sum + shippingFeePerItem * item.quantity,
-    0
-  );
+  const shippingFee = cartItems.reduce((sum, item) => {
+    if (paymentMethod === "cod") {
+      return sum + 150 * item.quantity;
+    } else {
+      return sum + 80 * item.quantity;
+    }
+  }, 0);
+
   const subtotal = cartItems.reduce((sum, item) => sum + item.cartTotal, 0);
   const total = subtotal + shippingFee;
 
-  // 🔁 Mutation to create the order
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
       const response = await axios.post(
@@ -46,22 +49,33 @@ export default function OrderSummary() {
           },
         }
       );
-
       return response.data;
     },
-    onSuccess: (data) => {
-      console.log(data);
-      // if (paymentMethod === "online" && data.paymentUrl) {
-      //   window.location.href = data.paymentUrl;
-      // } else {
-      //   toast.success("Order placed successfully!");
-      //   router.push("/thank-you");
-      // }
+    onSuccess: async (data) => {
+      if (paymentMethod === "online" && data.sessionId) {
+        try {
+          const cashfree = await load({
+            mode: "production",
+          });
+
+          await cashfree.checkout({
+            paymentSessionId: data.sessionId,
+            redirectTarget: "_modal",
+          });
+        } catch (e) {
+          console.error("Cashfree SDK Error", e);
+          toast.error("Failed to load payment gateway.");
+        }
+      } else {
+        toast.success("Order placed successfully!");
+        router.push("/thank-you");
+      }
     },
     onError: (error: any) => {
       toast.error(error?.response?.data?.msg || "Something went wrong");
     },
   });
+
   return (
     <section className="border p-4 rounded-xl">
       <h2 className="text-lg font-bold mb-2">Order Summary</h2>
