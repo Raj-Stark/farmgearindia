@@ -12,9 +12,25 @@ const manrope = Manrope({
   display: "swap",
 });
 
+const keywords =
+  "spare parts, farm spare parts, farm tools, spare parts bharat, sparepartsbharat, sparepartsbharat.com";
+
 export const metadata: Metadata = {
   title: "FarmGear India",
-  description: "Premium farming machinery",
+  description: "Premium farming machinery and spare parts",
+  keywords: keywords,
+  openGraph: {
+    title: "FarmGear India",
+    description: "Premium farming machinery and spare parts",
+    images: [],
+    url: "https://www.sparepartsbharat.com/",
+  },
+  twitter: {
+    title: "FarmGear India",
+    description: "Premium farming machinery and spare parts",
+    images: [],
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({
