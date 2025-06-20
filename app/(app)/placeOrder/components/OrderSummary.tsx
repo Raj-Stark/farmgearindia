@@ -18,11 +18,14 @@ export default function OrderSummary() {
   const isBillingValid = useAtomValue(isBillingInfoValidAtom);
   const router = useRouter();
 
-  const shippingFeePerItem = 1;
-  const shippingFee = cartItems.reduce(
-    (sum, item) => sum + shippingFeePerItem * item.quantity,
-    0
-  );
+  const shippingFee = cartItems.reduce((sum, item) => {
+    if (paymentMethod === "cod") {
+      return sum + 150 * item.quantity;
+    } else {
+      return sum + 80 * item.quantity;
+    }
+  }, 0);
+
   const subtotal = cartItems.reduce((sum, item) => sum + item.cartTotal, 0);
   const total = subtotal + shippingFee;
 

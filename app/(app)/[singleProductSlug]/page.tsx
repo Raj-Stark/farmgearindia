@@ -1,5 +1,3 @@
-"use client";
-
 import { ProductType, Review } from "@/app/types";
 import { Separator } from "@/components/ui/separator";
 import axios from "axios";
@@ -44,7 +42,6 @@ export default async function ProductDetailsPage({ params }: PageProps) {
 
   try {
     product = await getProductById(singleProductSlug);
-    console.log(product);
   } catch (err) {
     error = err instanceof Error ? err.message : "An unexpected error occurred";
   }

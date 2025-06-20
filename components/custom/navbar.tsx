@@ -20,6 +20,10 @@ import { Badge } from "@/components/ui/badge";
 import SearchOverlay from "./search-overlay";
 import { toast } from "sonner";
 
+import MainLogoDesktop from "../../public/logo.png";
+import MainLogoMobile from "../../public/mobile-logo.png";
+import Image from "next/image";
+
 const Navbar = () => {
   const router = useRouter();
   const user = useAtomValue(userAtom);
@@ -45,15 +49,27 @@ const Navbar = () => {
       {searchOpen && <SearchOverlay onClose={() => setSearchOpen(false)} />}
 
       <header className="bg-background border-b border-border shadow-sm z-40 relative">
-        <nav className="flex items-center justify-between gap-2 px-3 py-2 xl:container xl:mx-auto xl:px-6 xl:py-4">
-          {/* Logo */}
-          <Typography
-            variant="h4"
-            className="text-lg font-semibold cursor-pointer"
+        <nav className="flex items-center justify-between gap-2 px-3 py-2 xl:container xl:mx-auto xl:px-6 xl:py-2">
+          <div
+            className="cursor-pointer flex items-center"
             onClick={() => router.push("/")}
           >
-            Farm Gear
-          </Typography>
+            {/* Mobile Logo */}
+            <Image
+              src={MainLogoMobile}
+              alt="Spare Parts Bharat Mobile Logo"
+              className="h-12 w-auto block xl:hidden"
+              priority
+            />
+
+            {/* Desktop Logo */}
+            <Image
+              src={MainLogoDesktop}
+              alt="Spare Parts Bharat Desktop Logo"
+              className="h-20 w-auto hidden xl:block"
+              priority
+            />
+          </div>
 
           {/* Search input/icon */}
           <div className="flex justify-between">

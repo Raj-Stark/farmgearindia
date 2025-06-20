@@ -13,8 +13,25 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "FarmGear India",
+  title: "Spare Parts Bharat",
   description: "Premium farming machinery",
+  icons: {
+    icon: [
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "16x16",
+        url: "/favicon-16x16.png",
+      },
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "32x32",
+        url: "/favicon-32x32.png",
+      },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
