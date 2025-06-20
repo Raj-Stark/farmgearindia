@@ -13,21 +13,57 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Spare Parts Bharat",
-  description: "Premium farming machinery",
+  title: {
+    default: "Spare Parts Bharat – Mill & Farming Machinery Spare Parts",
+    template: "%s | Spare Parts Bharat",
+  },
+  description:
+    "Premium spare parts for milling and farming machinery. OEM & aftermarket parts — fast shipping across India.",
+  metadataBase: new URL("https://www.sparepartsbharat.com"),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Spare Parts Bharat – Mill & Farming Machinery Parts",
+    description:
+      "High-quality spare parts for agricultural and milling equipment. Genuine OEM & aftermarket options.",
+    url: "https://www.sparepartsbharat.com",
+    siteName: "Spare Parts Bharat",
+    type: "website",
+    locale: "en_IN",
+    images: [
+      {
+        url: "https://www.sparepartsbharat.com/agriculture.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Spare Parts Bharat logo and equipment",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Spare Parts Bharat – Mill & Farming Machinery Parts",
+    description:
+      "Premium spare parts for milling and farming machinery. OEM & aftermarket options.",
+    images: ["https://www.sparepartsbharat.com/agriculture.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   icons: {
     icon: [
       {
         rel: "icon",
-        type: "image/png",
-        sizes: "16x16",
         url: "/favicon-16x16.png",
+        sizes: "16x16",
+        type: "image/png",
       },
       {
         rel: "icon",
-        type: "image/png",
-        sizes: "32x32",
         url: "/favicon-32x32.png",
+        sizes: "32x32",
+        type: "image/png",
       },
     ],
     apple: "/apple-touch-icon.png",

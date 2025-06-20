@@ -7,6 +7,7 @@ import StarRating from "@/components/custom/star-rating";
 import ProductReviewForm from "./components/product-review-form";
 import ProductReviewList from "./components/product-review-list";
 import ReactMarkdown from "react-markdown";
+import type { Metadata } from "next";
 
 export interface SingleProductType extends ProductType {
   reviews: Review[];
@@ -28,6 +29,55 @@ async function getProductById(
   }
 }
 
+// ✅ SEO Metadata Generator
+export async function generateMetadata({
+  params,
+}: {
+  params: { singleProductSlug: string };
+}): Promise<Metadata> {
+  const product = await getProductById(params.singleProductSlug);
+
+  if (!product) {
+    return {
+      title: "Product not found | Spare Parts Bharat",
+      description: "This product does not exist or is unavailable.",
+    };
+  }
+
+  return {
+    title: `${product.name} | Spare Parts Bharat`,
+    description:
+      product.description?.slice(0, 160) ||
+      "High-quality spare parts for farming and mill machinery.",
+    openGraph: {
+      title: `${product.name} | Spare Parts Bharat`,
+      description:
+        product.description?.slice(0, 200) ||
+        "Get the best-quality replacement parts for agricultural and milling machines.",
+      url: `https://www.sparepartsbharat.com/${params.singleProductSlug}`,
+      siteName: "Spare Parts Bharat",
+      images: product.images?.length
+        ? [
+            {
+              url: product.images[0],
+              width: 1200,
+              height: 630,
+              alt: `${product.name} image`,
+            },
+          ]
+        : [],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${product.name} | Spare Parts Bharat`,
+      description: product.description?.slice(0, 200),
+      images: product.images?.length ? [product.images[0]] : [],
+    },
+  };
+}
+
+// ✅ Dynamic Page
 type PageProps = {
   params: {
     singleProductSlug: string;
@@ -35,24 +85,7 @@ type PageProps = {
 };
 
 export default async function ProductDetailsPage({ params }: PageProps) {
-  const { singleProductSlug } = params;
-
-  let product: SingleProductType | null = null;
-  let error: string | null = null;
-
-  try {
-    product = await getProductById(singleProductSlug);
-  } catch (err) {
-    error = err instanceof Error ? err.message : "An unexpected error occurred";
-  }
-
-  if (error) {
-    return (
-      <div className="container mx-auto py-8 px-4 text-red-600 text-center">
-        Error: {error}
-      </div>
-    );
-  }
+  const product = await getProductById(params.singleProductSlug);
 
   if (!product) {
     return (
@@ -62,11 +95,8 @@ export default async function ProductDetailsPage({ params }: PageProps) {
     );
   }
 
-  // Pre-process description to ensure proper markdown formatting
-  const processDescription = (text: string) => {
-    // Ensure two newlines for paragraphs
-    return text.replace(/\n\n/g, "\n").replace(/\n/g, "\n\n");
-  };
+  const processDescription = (text: string) =>
+    text.replace(/\n\n/g, "\n").replace(/\n/g, "\n\n");
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -102,7 +132,6 @@ export default async function ProductDetailsPage({ params }: PageProps) {
           <div className="prose max-w-none">
             <ReactMarkdown
               components={{
-                // Customize rendering if needed
                 p: ({ node, ...props }) => <p className="mb-4" {...props} />,
                 li: ({ node, ...props }) => (
                   <li className="ml-4 list-disc" {...props} />
