@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /profile
+Disallow: /wishlist
+Disallow: /placeOrder
+Allow: /
+
+# Host
+Host: https://www.sparepartsbharat.com
+
+# Sitemaps
+Sitemap: https://www.sparepartsbharat.com/sitemap.xml
