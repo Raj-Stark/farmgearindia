@@ -1,3 +1,4 @@
+export const revalidate = 10;
 import SectionSeparator from "@/components/custom/section-seprator";
 import HeroSection from "./components/hero-section";
 import CategorySection from "./components/category-section";
