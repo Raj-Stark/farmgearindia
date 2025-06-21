@@ -21,7 +21,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { toast } from "sonner";
 import { truncateText } from "@/utils/truncate-text";
 import { userAtom } from "@/app/atoms/userAtom";
-import { checkLogin } from "@/utils/check-login";
+import { sendGAEvent } from "@next/third-parties/google";
 
 interface ProductCardProps {
   product: ProductType;
@@ -106,9 +106,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
       {/* CTA */}
       <CardFooter className="px-1 py-0 md:px-3">
         <Button
-          variant={"default"}
+          variant="default"
           className="w-full cursor-pointer"
-          onClick={() => router.push(`/${slug}`)}
+          onClick={() => {
+            sendGAEvent("add_to_cart", {
+              value: product.price,
+              currency: "INR",
+              items: [{ id: product._id, name: product.name }],
+            });
+
+            router.push(`/${slug}`);
+          }}
         >
           Add to Cart
         </Button>

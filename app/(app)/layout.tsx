@@ -5,6 +5,7 @@ import "../globals.css";
 import Provider from "../provider";
 import { Toaster } from "@/components/ui/sonner";
 import Footer from "@/components/custom/footer";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -84,6 +85,7 @@ export default function RootLayout({
         </Provider>
         <Footer />
         <Toaster richColors position="top-left" expand={true} />
+        <GoogleAnalytics gaId="G-XBZ2VGSRZV" />
       </body>
     </html>
   );
