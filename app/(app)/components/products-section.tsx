@@ -1,3 +1,4 @@
+export const revalidate = 10;
 import React from "react";
 import ProductCard from "@/components/custom/product-card";
 import { ProductType } from "@/app/types";
@@ -6,6 +7,8 @@ import axios from "axios";
 async function getFeaturedProducts(): Promise<ProductType[]> {
   try {
     const endpoint = `${process.env.NEXT_PUBLIC_LOCAL_URL}product`;
+
+    console.log(endpoint);
     const response = await axios.get<{ products: ProductType[] }>(endpoint);
     return response.data.products.filter((p) => p.featured);
   } catch (error) {
