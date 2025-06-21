@@ -129,7 +129,7 @@ const ProductCardAction = ({ product }: Props) => {
       <div className="flex items-center gap-4 mt-6">
         <a
           href={getWhatsappLink(BUSINESS_WHATSAPP_NUMBER, {
-            text: `Hello, I would like to enquire about the ${name}. ${DOMAIN_NAME}/${slug}`,
+            text: `Hello, I would like to enquire about the ${name}. ${DOMAIN_NAME}${slug}`,
           })}
           target="_blank"
           rel="noopener noreferrer"
