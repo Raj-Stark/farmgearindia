@@ -144,6 +144,14 @@ const ProductCardAction = ({ product }: Props) => {
       return;
     }
 
+    if (
+      SUBCATEGORY_OPTIONS[subCategorySlug] &&
+      Object.entries(metadata).length < 1
+    ) {
+      toast.error("Please select product configurations.");
+      return;
+    }
+
     const newCartItem = {
       id: _id,
       title: name,
