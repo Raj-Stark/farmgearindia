@@ -16,19 +16,26 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import SectionSeparator from "@/components/custom/section-seprator";
+import type { Metadata } from "next";
 
+// Combined product type including reviews
 export interface SingleProductType extends ProductType {
   reviews: Review[];
 }
 
+type PageProps = {
+  params: { singleProductSlug: string };
+};
+
+// Memoized product fetch
 async function getProductById(
   singleProductSlug: string
 ): Promise<SingleProductType | null> {
   try {
-    const response = await axios.get(
+    const res = await axios.get(
       `${process.env.NEXT_PUBLIC_LOCAL_URL}product/${singleProductSlug}`
     );
-    return response.data.product;
+    return res.data.product;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 404) {
       return null;
@@ -51,11 +58,54 @@ async function getRelatedProducts(
   }
 }
 
-type PageProps = {
-  params: {
-    singleProductSlug: string;
+// Dynamic metadata generation for SEO
+export async function generateMetadata({
+  params,
+}: {
+  params: { singleProductSlug: string };
+}): Promise<Metadata> {
+  const { singleProductSlug } = params;
+  const product = await getProductById(singleProductSlug);
+
+  if (!product) {
+    return {
+      title: "Product not found | Spare Parts Bharat",
+      description: "The requested product is unavailable.",
+    };
+  }
+
+  return {
+    title: `${product.name} | Spare Parts Bharat`,
+    description:
+      product.description?.slice(0, 160) ||
+      "Premium spare parts for mill & farming machinery.",
+    openGraph: {
+      title: `${product.name} | Spare Parts Bharat`,
+      description:
+        product.description?.slice(0, 200) ||
+        "High-quality replacement parts for agricultural and milling machines.",
+      url: `https://www.sparepartsbharat.com/${singleProductSlug}`,
+      siteName: "Spare Parts Bharat",
+      images: product.images?.length
+        ? [
+            {
+              url: product.images[0],
+              width: 1200,
+              height: 630,
+              alt: product.name,
+            },
+          ]
+        : [],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${product.name} | Spare Parts Bharat`,
+      description: product.description?.slice(0, 200),
+      images: product.images || [],
+    },
   };
-};
+}
 
 export default async function ProductDetailsPage({ params }: PageProps) {
   const { singleProductSlug } = params;
@@ -88,11 +138,8 @@ export default async function ProductDetailsPage({ params }: PageProps) {
     );
   }
 
-  // Pre-process description to ensure proper markdown formatting
-  const processDescription = (text: string) => {
-    // Ensure two newlines for paragraphs
-    return text.replace(/\n\n/g, "\n").replace(/\n/g, "\n\n");
-  };
+  const processDescription = (text: string) =>
+    text.replace(/\n\n/g, "\n").replace(/\n/g, "\n\n");
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -109,15 +156,16 @@ export default async function ProductDetailsPage({ params }: PageProps) {
 
         <div className="w-full ">
           <h1 className="text-2xl font-semibold">{product.name}</h1>
-
           <div className="flex items-center mt-2 space-x-4 text-sm text-gray-600">
             <div className="flex items-center space-x-1">
-              <StarRating ratingValue={String(product.averageRating) || ""} />
+              <StarRating ratingValue={`${product.averageRating}`} />
               <span>({product.numOfReviews} reviews)</span>
             </div>
             <Separator orientation="vertical" className="h-4" />
             <span
-              className={product.inventory ? "text-green-600" : "text-red-500"}
+              className={
+                product.inventory === 0 ? "text-red-500" : "text-green-600"
+              }
             >
               {product.inventory === 0 ? "Out Of Stock" : "In Stock"}
             </span>
@@ -125,10 +173,10 @@ export default async function ProductDetailsPage({ params }: PageProps) {
 
           <p className="text-2xl font-bold mt-4">₹ {product.price}</p>
           <Separator className="my-4" />
+
           <div className="prose max-w-none">
             <ReactMarkdown
               components={{
-                // Customize rendering if needed
                 p: ({ node, ...props }) => <p className="mb-4" {...props} />,
                 li: ({ node, ...props }) => (
                   <li className="ml-4 list-disc" {...props} />
@@ -136,10 +184,11 @@ export default async function ProductDetailsPage({ params }: PageProps) {
               }}
             >
               {processDescription(
-                product.description || "No description available"
+                product.description ?? "No description available"
               )}
             </ReactMarkdown>
           </div>
+
           <Separator className="my-4" />
           <ProductCardAction product={product} />
         </div>

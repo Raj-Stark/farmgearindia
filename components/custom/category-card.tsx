@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import { Category } from "@/app/types";
 import { useRouter } from "next/navigation";
+import { sendGAEvent } from "@next/third-parties/google";
 
 interface Props {
   category: Category;
@@ -13,6 +14,11 @@ interface Props {
 
 const CategoryCard = ({ category, path }: Props) => {
   const router = useRouter();
+
+  const handleClick = () => {
+    sendGAEvent("category_click", { slug: category.slug });
+    router.push(path ?? "");
+  };
   return (
     <Card
       key={category._id}
@@ -33,9 +39,7 @@ const CategoryCard = ({ category, path }: Props) => {
       <CardFooter className="absolute bottom-4 z-20">
         <Button
           className="bg-green-700 hover:bg-green-800 text-white text-sm shadow-md"
-          onClick={() => {
-            router.push(path ?? "");
-          }}
+          onClick={handleClick}
         >
           View More
         </Button>

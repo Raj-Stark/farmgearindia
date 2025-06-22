@@ -86,7 +86,7 @@ const SUBCATEGORY_OPTIONS: Record<string, Record<string, string[]>> = {
 
 const ProductCardAction = ({ product }: Props) => {
   const router = useRouter();
-  const { _id, name, price, images, inventory, subcategory } = product;
+  const { _id, slug, name, price, images, inventory, subcategory } = product;
   const user = useAtomValue(userAtom);
 
   const [quantity, setQuantity] = useState(1);
@@ -96,7 +96,7 @@ const ProductCardAction = ({ product }: Props) => {
   const isInCart = cartData.some((item) => item.id === _id);
   const isInWishlist = wishlist.some((item) => item._id === _id);
 
-  const subCategorySlug = product.subcategory.name.toLowerCase().trim();
+  const subCategorySlug = subcategory.name.toLowerCase().trim();
 
   const [metadata, setMetadata] = useState<Record<string, string>>({});
 
@@ -229,7 +229,7 @@ const ProductCardAction = ({ product }: Props) => {
       <div className="flex items-center gap-4 mt-6">
         <a
           href={getWhatsappLink(BUSINESS_WHATSAPP_NUMBER, {
-            text: `Hello, I would like to enquire about the ${name}. ${DOMAIN_NAME}/${_id}`,
+            text: `Hello, I would like to enquire about the ${name}. ${DOMAIN_NAME}/${slug}`,
           })}
           target="_blank"
           rel="noopener noreferrer"
