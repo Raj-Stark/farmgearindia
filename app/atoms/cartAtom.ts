@@ -8,6 +8,7 @@ interface CartItem {
   quantity: number;
   inventory: number;
   cartTotal: number;
+  metaData?: Record<string, string>;
 }
 
 export const cartAtom = atomWithStorage<CartItem[]>("cart", []);

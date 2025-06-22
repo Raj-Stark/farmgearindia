@@ -19,9 +19,74 @@ interface Props {
   product: ProductType;
 }
 
+const SUBCATEGORY_OPTIONS: Record<string, Record<string, string[]>> = {
+  screen: {
+    Material: [
+      "Carbon Steel",
+      "Mild Steel",
+      "Stainless Steel",
+      "Stainless Steel 304",
+    ],
+    Thickness: ["1mm", "1.2mm", "1.5mm", "2mm", "2.5mm"],
+    HoleSize: ["0.6mm", "0.8mm", "0.9mm", "1.0mm", "1.1mm", "1.2mm"],
+    Hardness: ["Plating Temper", "Electric Temper", "Nitrating Temper"],
+    Color: ["Black", "Grey", "White", "Golden"],
+  },
+  pully: {
+    Material: ["Mild Steel", "CI Casting"],
+    Group: ["Flat", "A Group", "B Group", "C Group", "Pilot Bore"],
+    BoreSize: [
+      "Pilot Bore",
+      "16 mm",
+      "18 mm",
+      "19 mm",
+      "20 mm",
+      "22 mm",
+      "24 mm",
+    ],
+  },
+  blade: {
+    Material: ["Carbon Steel", "Mild Steel", "Stainless Steel"],
+    Thickness: ["2mm", "3mm", "4mm", "5mm", "6mm", "8mm"],
+    Hardness: ["Plating Temper", "Electric Temper", "Nitrating Temper"],
+    Color: ["Black", "Grey", "White", "Golden"],
+  },
+  belt: {
+    Group: ["Flat", "A Group", "B Group", "C Group", "Pilot Bore"],
+  },
+  bearing: {
+    Size: [
+      "Combine Bearing",
+      "Shaft Bearing",
+      "Machine Bearing",
+      "Pully Bearing",
+    ],
+  },
+  fan: {
+    BoreSize: ["16mm", "18mm", "20mm", "22mm"],
+    Model: ["Blower Fan", "6n40", "6n70", "6n100", "6n110", "6w400"],
+  },
+  shaft: {
+    PulleySize: ["18mm", "19mm", "20mm", "22mm"],
+    Material: ["Carbon Steel", "Mild Steel", "Stainless Steel"],
+    Hardness: ["Electric Temper", "Nitrating Temper"],
+  },
+  hopper: {
+    Shape: ["Round Hopper", "Square Hopper"],
+    Material: ["Mild Steel", "Gl Steel"],
+  },
+  blower: {
+    Model: ["6n40", "6n70", "6n100", "6w300"],
+  },
+  "nut-bolts": {
+    Material: ["Mild Steel", "Gl Steel", "Stainless Steel"],
+    Hardness: ["Plating Temper", "Electric Temper", "Nitrating Temper"],
+  },
+};
+
 const ProductCardAction = ({ product }: Props) => {
   const router = useRouter();
-  const { _id, name, price, images, inventory } = product;
+  const { _id, name, price, images, inventory, subcategory } = product;
   const user = useAtomValue(userAtom);
 
   const [quantity, setQuantity] = useState(1);
@@ -30,6 +95,10 @@ const ProductCardAction = ({ product }: Props) => {
 
   const isInCart = cartData.some((item) => item.id === _id);
   const isInWishlist = wishlist.some((item) => item._id === _id);
+
+  const subCategorySlug = product.subcategory.name.toLowerCase().trim();
+
+  const [metadata, setMetadata] = useState<Record<string, string>>({});
 
   const increaseQty = () => {
     if (quantity < inventory) {
@@ -83,6 +152,7 @@ const ProductCardAction = ({ product }: Props) => {
       inventory,
       quantity,
       cartTotal: price * quantity,
+      metaData: metadata,
     };
 
     setCartData((prev) => [...prev, newCartItem]);
@@ -93,6 +163,36 @@ const ProductCardAction = ({ product }: Props) => {
 
   return (
     <>
+      {SUBCATEGORY_OPTIONS[subCategorySlug] && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {Object.entries(SUBCATEGORY_OPTIONS[subCategorySlug]).map(
+            ([label, values]) => (
+              <div key={label}>
+                <label className="block text-sm font-medium mb-1">
+                  {label}
+                </label>
+                <select
+                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                  value={metadata[label] || ""}
+                  onChange={(e) =>
+                    setMetadata((prev) => ({
+                      ...prev,
+                      [label]: e.target.value,
+                    }))
+                  }
+                >
+                  <option value="">Select {label}</option>
+                  {values.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )
+          )}
+        </div>
+      )}
       {/* Quantity & Wishlist */}
       <div className="flex items-center space-x-4 mt-6">
         <div className="flex border rounded-md">

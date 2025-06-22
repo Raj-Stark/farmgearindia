@@ -7,6 +7,15 @@ import StarRating from "@/components/custom/star-rating";
 import ProductReviewForm from "./components/product-review-form";
 import ProductReviewList from "./components/product-review-list";
 import ReactMarkdown from "react-markdown";
+import ProductCard from "@/components/custom/product-card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import SectionSeparator from "@/components/custom/section-seprator";
 
 export interface SingleProductType extends ProductType {
   reviews: Review[];
@@ -28,6 +37,20 @@ async function getProductById(
   }
 }
 
+async function getRelatedProducts(
+  singleProductSlug: string
+): Promise<ProductType[]> {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_LOCAL_URL}product/related/${singleProductSlug}`
+    );
+    return response.data.relatedProducts || [];
+  } catch (error) {
+    console.error("Error fetching related products:", error);
+    return [];
+  }
+}
+
 type PageProps = {
   params: {
     singleProductSlug: string;
@@ -38,10 +61,13 @@ export default async function ProductDetailsPage({ params }: PageProps) {
   const { singleProductSlug } = params;
 
   let product: SingleProductType | null = null;
+  let relatedProducts: ProductType[] = [];
+
   let error: string | null = null;
 
   try {
     product = await getProductById(singleProductSlug);
+    relatedProducts = await getRelatedProducts(singleProductSlug);
   } catch (err) {
     error = err instanceof Error ? err.message : "An unexpected error occurred";
   }
@@ -56,7 +82,7 @@ export default async function ProductDetailsPage({ params }: PageProps) {
 
   if (!product) {
     return (
-      <div className="container mx-auto py-8 px-4 text-center">
+      <div className="container mx-auto py-8 px-4 text-center min-h-screen font-bold">
         Product not found.
       </div>
     );
@@ -70,8 +96,8 @@ export default async function ProductDetailsPage({ params }: PageProps) {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 place-items-center">
-        <div className="w-full lg:w-2xl">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-14">
+        <div className="w-full">
           {product.images?.length > 0 ? (
             <ImageCarousel image={product.images} />
           ) : (
@@ -81,7 +107,7 @@ export default async function ProductDetailsPage({ params }: PageProps) {
           )}
         </div>
 
-        <div className="w-full">
+        <div className="w-full ">
           <h1 className="text-2xl font-semibold">{product.name}</h1>
 
           <div className="flex items-center mt-2 space-x-4 text-sm text-gray-600">
@@ -118,6 +144,28 @@ export default async function ProductDetailsPage({ params }: PageProps) {
           <ProductCardAction product={product} />
         </div>
       </div>
+
+      <div className="mt-4">
+        <SectionSeparator sectionTitle="Related Products"></SectionSeparator>
+      </div>
+
+      <div className=" mx-auto  lg:max-w-[90vw] ">
+        <Carousel className=" ">
+          <CarouselContent>
+            {relatedProducts.map((relatedProduct) => (
+              <CarouselItem
+                key={relatedProduct._id}
+                className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+              >
+                <ProductCard product={relatedProduct} />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="hidden lg:block" />
+          <CarouselNext className="hidden lg:block" />
+        </Carousel>
+      </div>
+
       <ProductReviewForm productId={product._id} />
       <ProductReviewList reviews={product.reviews} />
     </div>

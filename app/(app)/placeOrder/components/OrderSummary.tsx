@@ -37,6 +37,7 @@ export default function OrderSummary() {
           items: cartItems.map((item) => ({
             product: item.id,
             amount: item.quantity,
+            metaData: item.metaData || {},
           })),
           tax: 0,
           shippingFee,

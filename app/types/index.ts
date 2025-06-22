@@ -8,6 +8,17 @@ export interface Category {
   __v: number;
 }
 
+export interface SubCategory {
+  _id: string;
+  name: string;
+  createdAt: string;
+  image: string;
+  parentId: string;
+  slug: string;
+  updatedAt: string;
+  __v: number;
+}
+
 export interface ProductType {
   _id: string;
   name: string;
@@ -17,6 +28,7 @@ export interface ProductType {
   numOfReviews: number;
   averageRating: number;
   category: Category;
+  subcategory: SubCategory;
   inventory: number;
   description: string;
   featured: boolean;
