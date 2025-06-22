@@ -69,7 +69,7 @@ export default function OrderSummary() {
         }
       } else {
         toast.success("Order placed successfully!");
-        router.push("/thank-you");
+        router.push("/profile?tab=orders");
       }
     },
     onError: (error: any) => {
