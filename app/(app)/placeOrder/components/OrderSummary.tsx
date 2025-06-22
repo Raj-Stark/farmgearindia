@@ -5,7 +5,7 @@ import { cartAtom } from "@/app/atoms/cartAtom";
 import { paymentMethodAtom } from "@/app/atoms/paymentMethodAtom";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/utils/format-currency";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -13,7 +13,7 @@ import { isBillingInfoValidAtom } from "@/app/atoms/billingatom";
 import axios from "axios";
 
 export default function OrderSummary() {
-  const cartItems = useAtomValue(cartAtom);
+  const [cartItems, setCartItems] = useAtom(cartAtom);
   const paymentMethod = useAtomValue(paymentMethodAtom);
   const isBillingValid = useAtomValue(isBillingInfoValidAtom);
   const router = useRouter();
@@ -63,11 +63,14 @@ export default function OrderSummary() {
             paymentSessionId: data.sessionId,
             redirectTarget: "_modal",
           });
+
+          setCartItems([]);
         } catch (e) {
           console.error("Cashfree SDK Error", e);
           toast.error("Failed to load payment gateway.");
         }
       } else {
+        setCartItems([]);
         toast.success("Order placed successfully!");
         router.push("/profile?tab=orders");
       }
