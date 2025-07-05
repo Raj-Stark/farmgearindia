@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/carousel";
 import SectionSeparator from "@/components/custom/section-seprator";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 // Combined product type including reviews
 export interface SingleProductType extends ProductType {
@@ -30,17 +31,23 @@ type PageProps = {
 // Memoized product fetch
 async function getProductById(
   singleProductSlug: string
-): Promise<SingleProductType | null> {
+): Promise<SingleProductType> {
   try {
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_LOCAL_URL}product/${singleProductSlug}`
     );
+
+    if (!res.data?.product) {
+      notFound(); // ✅ triggers Next.js 404 page
+    }
+
     return res.data.product;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 404) {
-      return null;
+      notFound(); // ✅ also handle if backend returns 404
     }
-    throw error;
+
+    throw error; // other errors (500, network, etc.)
   }
 }
 

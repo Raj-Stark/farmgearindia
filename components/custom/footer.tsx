@@ -35,7 +35,7 @@ export default function Footer() {
           <div className="mt-6 space-y-3 text-sm text-gray-400">
             <div className="flex justify-center md:justify-start items-start gap-3">
               <ShieldCheckIcon className="w-5 h-5 mt-1" />
-              <span>65/1 'O' Road Belgachia, Howrah - 711108</span>
+              <span>65/1 Road Belgachia, Howrah - 711108</span>
             </div>
             <div className="flex justify-center md:justify-start items-start gap-3">
               <SendIcon className="w-5 h-5 mt-1" />

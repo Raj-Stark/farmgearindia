@@ -67,6 +67,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <Image
           src={productImage}
           alt={name}
+          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
           fill
           className="object-cover cursor-pointer"
           onClick={() => router.push(`/${slug}`)}
