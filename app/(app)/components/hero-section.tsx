@@ -15,9 +15,12 @@ const HeroSection = () => {
       />
 
       <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center px-4 animate-fade-in">
-        <h1 className="text-white text-2xl md:text-6xl font-bold animate-slide-up opacity-0 delay-100">
-          Enhance Your Farm’s Productivity
-        </h1>
+        <div className="animate-slide-up opacity-0 delay-100">
+          <h1 className="text-white text-2xl md:text-6xl font-bold">
+            Enhance Your Farm’s Productivity
+          </h1>
+        </div>
+
         <p className="text-white text-sm md:text-xl mt-2 max-w-xl animate-slide-up opacity-0 delay-200">
           Discover cutting-edge machinery designed to optimize your farming
           operations and maximize yields.
