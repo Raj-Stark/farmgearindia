@@ -68,28 +68,31 @@ const ProfileTabs = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full">
       <Tabs
         value={selectedTab}
         onValueChange={handleTabChange}
-        className="w-full"
+        className="w-full "
       >
-        <TabsList className="w-full flex gap-4 bg-muted p-3 rounded-xl justify-start">
+        <TabsList
+          className="w-full flex md:gap-4
+         bg-muted md:p-3 sm:p-0 rounded-xl justify-between"
+        >
           <TabsTrigger
             value="profile"
-            className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-3 rounded-lg text-base font-medium transition-colors hover:bg-white/80"
+            className="data-[state=active]:bg-white data-[state=active]:shadow-sm md:px-6 py-3 rounded-lg text-base font-medium transition-colors hover:bg-white/80"
           >
             Profile
           </TabsTrigger>
           <TabsTrigger
             value="orders"
-            className="data-[state=active]:bg-white data-[state=active]:shadow-sm px-6 py-3 rounded-lg text-base font-medium transition-colors hover:bg-white/80"
+            className="data-[state=active]:bg-white data-[state=active]:shadow-sm md:px-6 py-3 rounded-lg text-base font-medium transition-colors hover:bg-white/80"
           >
             Order History
           </TabsTrigger>
           <TabsTrigger
             value="logout"
-            className="ml-auto text-red-600 hover:text-red-700 px-6 py-3 text-base font-medium rounded-lg transition-colors"
+            className="data-[state=active]:bg-white data-[state=active]:shadow-sm md:px-6 py-3 rounded-lg text-base font-medium transition-colors hover:bg-white/80"
           >
             Logout
           </TabsTrigger>

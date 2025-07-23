@@ -52,3 +52,25 @@ export interface UserId {
   name: string;
   email: string;
 }
+
+export type SingleOrderItem = {
+  name: string;
+  image: string;
+  price: number;
+  amount: number;
+  product: string;
+  metaData?: Record<string, any>;
+};
+
+export type Order = {
+  _id: string;
+  tax: number;
+  shippingFee: number;
+  subtotal: number;
+  total: number;
+  orderItems: SingleOrderItem[];
+  status: "pending" | "failed" | "paid" | "delivered" | "canceled";
+  user: string;
+  createdAt: string;
+  updatedAt: string;
+};
