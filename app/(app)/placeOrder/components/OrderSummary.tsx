@@ -11,6 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { isBillingInfoValidAtom } from "@/app/atoms/billingatom";
 import axios from "axios";
+import Link from "next/link";
 
 export default function OrderSummary() {
   const [cartItems, setCartItems] = useAtom(cartAtom);
@@ -76,7 +77,18 @@ export default function OrderSummary() {
       }
     },
     onError: (error: any) => {
-      toast.error(error?.response?.data?.msg || "Something went wrong");
+      // toast.error(error?.response?.data?.msg || "Something went wrong");
+      toast.info(
+        <span>
+          {error?.response?.data?.msg}
+          <Link
+            href="/profile?tab=profile"
+            className="text-blue-500 underline block"
+          >
+            View Orders
+          </Link>
+        </span>
+      );
     },
   });
 
@@ -108,7 +120,7 @@ export default function OrderSummary() {
       <Button
         className="mt-4 w-full"
         onClick={() => mutate()}
-        disabled={isPending || !isBillingValid}
+        disabled={isPending}
       >
         {isPending ? "Placing Order..." : "Place Order"}
       </Button>
