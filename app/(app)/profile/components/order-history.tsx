@@ -9,6 +9,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { formatCurrency } from "@/utils/format-currency";
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -89,7 +90,7 @@ const OrderHistory = () => {
                 </div>
                 <div className="text-right">
                   <Typography className="text-lg font-bold text-gray-800">
-                    ₹{order.total.toFixed(2)}
+                    {formatCurrency(Number(order.total.toFixed(2)))}
                   </Typography>
                   <span
                     className={`inline-block mt-1 px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
@@ -106,13 +107,33 @@ const OrderHistory = () => {
                   {order.orderItems.map((item, index) => (
                     <div
                       key={index}
-                      className="flex justify-between items-center  pb-2 last:border-none"
+                      className="flex justify-between items-center pb-2 last:border-none "
                     >
-                      <Typography className="text-gray-700">
-                        {item.amount} × {item.name}
-                      </Typography>
+                      <div>
+                        <Typography className="text-gray-700">
+                          {item.amount} × {item.name}
+                        </Typography>
+                        {item.metaData && (
+                          <Typography className="">
+                            Product Configuration:
+                          </Typography>
+                        )}
+
+                        {item.metaData &&
+                          Object.entries(item.metaData).map(
+                            ([key, value], i) => (
+                              <Typography
+                                key={i}
+                                className="text-gray-500 text-sm pl-4"
+                              >
+                                {key}: {value}
+                              </Typography>
+                            )
+                          )}
+                      </div>
+
                       <Typography className="text-gray-900 font-medium">
-                        ₹{item.price.toFixed(2)}
+                        {formatCurrency(Number(item.price.toFixed(2)))}
                       </Typography>
                     </div>
                   ))}
@@ -122,7 +143,7 @@ const OrderHistory = () => {
                         Sub Total
                       </Typography>
                       <Typography className="text-gray-700">
-                        ₹{order.subtotal}
+                        {formatCurrency(Number(order.subtotal))}
                       </Typography>
                     </div>
                     <div className="flex justify-between items-center  pb-2 last:border-none">
@@ -130,13 +151,13 @@ const OrderHistory = () => {
                         Shipping fee
                       </Typography>
                       <Typography className="text-gray-700">
-                        ₹{order.shippingFee}
+                        {formatCurrency(Number(order.shippingFee))}
                       </Typography>
                     </div>
                     <div className="flex justify-between items-center  pb-2 last:border-none">
                       <Typography className="text-gray-700">Tax</Typography>
                       <Typography className="text-gray-700">
-                        ₹{order.tax}
+                        {formatCurrency(Number(order.tax))}
                       </Typography>
                     </div>
                     <div className="flex justify-between items-center  pb-2 last:border-none">
@@ -144,7 +165,7 @@ const OrderHistory = () => {
                         Total
                       </Typography>
                       <Typography className="text-lg font-bold text-gray-800">
-                        ₹{order.total}
+                        {formatCurrency(Number(order.total))}
                       </Typography>
                     </div>
                   </div>
